@@ -76,7 +76,10 @@ func (ispr iscsiDevicePathResolver) GetRealDevicePath(diskSettings boshsettings.
 		return "", false, bosherr.WrapError(err, "More than 2 persistent disks attached")
 	}
 
-	if lastDiskID == diskSettings.ID && len(existingPaths) > 0 {
+	alreadySeen := lastDiskID == diskSettings.ID
+	brandNew := lastDiskID == ""
+	isPartitionned := len(existingPaths) > 0
+	if (alreadySeen || brandNew) && isPartitionned {
 		ispr.logger.Info(ispr.logTag, "Found existing path '%s'", existingPaths[0])
 		return existingPaths[0], false, nil
 	}
@@ -141,12 +144,18 @@ func (ispr iscsiDevicePathResolver) getMappedDevices() ([]string, error) {
 func (ispr iscsiDevicePathResolver) getDevicePaths(devices []string, shouldExist bool) ([]string, error) {
 	var paths []string
 	for _, device := range devices {
-		exist, err := regexp.MatchString("-part1", device)
+		fields := strings.Fields(device)
+		if len(fields) == 0 {
+			ispr.logger.Warn(ispr.logTag, "unexpected device in dmsetup output: '%+v'", device)
+			continue
+		}
+		deviceName := fields[0]
+		firstPartitionExists, err := regexp.MatchString("-part1", deviceName)
 		if err != nil {
 			return paths, bosherr.WrapError(err, "There is a problem with your regexp: '-part1'. That is used to find existing device")
 		}
-		if exist == shouldExist {
-			matchedPath := path.Join("/dev/mapper", strings.Split(strings.Fields(device)[0], "-")[0])
+		if firstPartitionExists == shouldExist {
+			matchedPath := path.Join("/dev/mapper", strings.Split(deviceName, "-")[0])
 			ispr.logger.Debug(ispr.logTag, "path in device list: '%+v'", matchedPath)
 			paths = append(paths, matchedPath)
 		}
@@ -227,17 +236,15 @@ func (ispr iscsiDevicePathResolver) getDevicePathAfterConnectTarget(existingPath
 
 func (ispr iscsiDevicePathResolver) lastMountedCid() (string, error) {
 	managedDiskSettingsPath := filepath.Join(ispr.dirProvider.BoshDir(), "managed_disk_settings.json")
-	var lastMountedCid string
 
-	if ispr.fs.FileExists(managedDiskSettingsPath) {
-		contents, err := ispr.fs.ReadFile(managedDiskSettingsPath)
-		if err != nil {
-			return "", bosherr.WrapError(err, "Reading managed_disk_settings.json")
-		}
-		lastMountedCid = string(contents)
-
-		return lastMountedCid, nil
+	if !ispr.fs.FileExists(managedDiskSettingsPath) {
+		return "", nil
 	}
 
-	return "", nil
+	contents, err := ispr.fs.ReadFile(managedDiskSettingsPath)
+	if err != nil {
+		return "", bosherr.WrapError(err, "Reading managed_disk_settings.json")
+	}
+
+	return string(contents), nil
 }

@@ -99,6 +99,9 @@ github.com/cloudfoundry/socks5-proxy
 # github.com/containerd/cgroups v0.0.0-20210114181951-8a68de567b68
 ## explicit; go 1.13
 github.com/containerd/cgroups/stats/v1
+# github.com/coreos/go-iptables v0.6.0
+## explicit; go 1.16
+github.com/coreos/go-iptables/iptables
 # github.com/davecgh/go-spew v1.1.1
 ## explicit
 github.com/davecgh/go-spew/spew
@@ -264,7 +267,7 @@ github.com/onsi/ginkgo/reporters/stenographer
 github.com/onsi/ginkgo/reporters/stenographer/support/go-colorable
 github.com/onsi/ginkgo/reporters/stenographer/support/go-isatty
 github.com/onsi/ginkgo/types
-# github.com/onsi/gomega v1.18.1
+# github.com/onsi/gomega v1.17.0
 ## explicit; go 1.16
 github.com/onsi/gomega
 github.com/onsi/gomega/format
@@ -272,7 +275,6 @@ github.com/onsi/gomega/gbytes
 github.com/onsi/gomega/gexec
 github.com/onsi/gomega/ghttp
 github.com/onsi/gomega/internal
-github.com/onsi/gomega/internal/gutil
 github.com/onsi/gomega/matchers
 github.com/onsi/gomega/matchers/support/goraph/bipartitegraph
 github.com/onsi/gomega/matchers/support/goraph/edge
@@ -304,6 +306,12 @@ go.opencensus.io/internal
 go.opencensus.io/trace
 go.opencensus.io/trace/internal
 go.opencensus.io/trace/tracestate
+# go4.org/intern v0.0.0-20210108033219-3eb7198706b2
+## explicit; go 1.13
+go4.org/intern
+# go4.org/unsafe/assume-no-moving-gc v0.0.0-20201222180813-1025295fd063
+## explicit; go 1.11
+go4.org/unsafe/assume-no-moving-gc
 # golang.org/x/crypto v0.0.0-20220210151621-f4118a5b28e2
 ## explicit; go 1.17
 golang.org/x/crypto/blowfish
@@ -425,3 +433,9 @@ gopkg.in/yaml.v2
 # gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 ## explicit
 gopkg.in/yaml.v3
+# inet.af/netaddr v0.0.0-20210515010201-ad03edc7c841
+## explicit; go 1.12
+inet.af/netaddr
+# inet.af/wf v0.0.0-20211204062712-86aaea0a7310
+## explicit; go 1.15
+inet.af/wf

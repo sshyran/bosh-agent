@@ -13,8 +13,6 @@ import (
 	"runtime"
 	"strings"
 	"sync"
-
-	"github.com/onsi/gomega/internal/gutil"
 )
 
 var (
@@ -223,11 +221,11 @@ func temporaryDirectory() (string, error) {
 	mu.Lock()
 	defer mu.Unlock()
 	if tmpDir == "" {
-		tmpDir, err = gutil.MkdirTemp("", "gexec_artifacts")
+		tmpDir, err = os.MkdirTemp("", "gexec_artifacts")
 		if err != nil {
 			return "", err
 		}
 	}
 
-	return gutil.MkdirTemp(tmpDir, "g")
+	return os.MkdirTemp(tmpDir, "g")
 }
